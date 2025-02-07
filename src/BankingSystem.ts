@@ -8,7 +8,7 @@
 
 enum TransactionType {
   Deposit,
-  Withdraw
+  Withdraw,
 }
 
 type Transaction = {
@@ -23,41 +23,80 @@ type BankAccount = {
   lastname: string;
   balance: number;
   isActive: boolean;
-  transactions: Transaction[]
-}
+  transactions: Transaction[];
+};
 
 let accounts: BankAccount[] = [];
 
-function createAccount(accountNo, firstname, lastname, initialDeposit, isActive = true) {
-
+function createAccount(
+  accountNo: number,
+  firstname: string,
+  lastname: string,
+  balance: number,
+  isActive: boolean = true
+): BankAccount {
+  const account: BankAccount = {
+    accountNo: accountNo,
+    firstname: firstname,
+    lastname: lastname,
+    balance: balance,
+    isActive: isActive,
+    transactions: [],
+  };
+  accounts.push(account);
+  return account;
+}
+function findAccount(accountNo: number): BankAccount {
+  return accounts.find((account: BankAccount) => account.accountNo === accountNo);
 }
 
-function processTransaction(accountNo, amount, transactionType) {
+function processTransaction(accountNo: number, amount: number, transactionType: TransactionType): string {
+  const account = findAccount(accountNo);
 
+  if (!account) return "Account not found";
+  const transaction: Transaction = {
+    accountNo: accountNo,
+    amount: amount,
+    type: transactionType,
+  };
+  if (transactionType === TransactionType.Deposit) {
+    account.balance += amount;
+    account.transactions.push(transaction);
+    return `${amount} deposited into account number ${accountNo}`;
+  } else {
+    if (account.balance < amount) return "Insufficient funds for withdrawal";
+    account.balance -= amount;
+    account.transactions.push(transaction);
+    return `${amount} withdrawn from account number ${accountNo}`;
+  }
 }
 
-function getBalance(accountNo) {
-
+function getBalance(accountNo: number): number {
+  const account = findAccount(accountNo);
+  return account.balance;
 }
 
-function getTransactionHistory(accountNo) {
-
+function getTransactionHistory(accountNo: number): Transaction[] {
+  const account = findAccount(accountNo);
+  return account.transactions;
 }
 
-function checkActiveStatus(accountNo) {
-
+function checkActiveStatus(accountNo: number): boolean {
+  const account = findAccount(accountNo);
+  return account.isActive;
 }
 
-function closeAccount(accountNo) {
-
+function closeAccount(accountNo: number): string {
+  accounts = accounts.filter((account) => account.accountNo !== accountNo);
+  return `Account number ${accountNo} closed`;
 }
 
 // Test cases (students should add more)
-console.log(createAccount(1, "John", "Smith", 100)) // { accountNo: 1, firstname: "John", lastname: "Smith", balance: 100, isActive: true, transactions: [] }
-console.log(processTransaction(1, 50, TransactionType.Deposit)) // "50 deposited into account number 1"
-console.log(processTransaction(1, 20, TransactionType.Withdraw)) // "20 withdrawn from account number 1"
-console.log(processTransaction(1, 500, TransactionType.Withdraw)) // "Insufficient funds for withdrawal"
-console.log(getBalance(1)) // 130
-console.log(getTransactionHistory(1)) // [{ accountNo: 1, amount: 50, type: TransactionType.Deposit }, { accountNo: 1, amount: 20, type: TransactionType.Withdraw }]
-console.log(checkActiveStatus(1)) // true
-console.log(closeAccount(1)) // "Account number 1 closed"
+console.log(createAccount(1, "John", "Smith", 100)); // { accountNo: 1, firstname: "John", lastname: "Smith", balance: 100, isActive: true, transactions: [] }
+console.log(processTransaction(1, 50, TransactionType.Deposit)); // "50 deposited into account number 1"
+console.log(processTransaction(1, 20, TransactionType.Withdraw)); // "20 withdrawn from account number 1"
+console.log(processTransaction(1, 500, TransactionType.Withdraw)); // "Insufficient funds for withdrawal"
+console.log(getBalance(1)); // 130
+console.log(getTransactionHistory(1)); // [{ accountNo: 1, amount: 50, type: TransactionType.Deposit }, { accountNo: 1, amount: 20, type: TransactionType.Withdraw }]
+console.log(checkActiveStatus(1)); // true
+console.log(closeAccount(1)); // "Account number 1 closed"

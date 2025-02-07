@@ -8,30 +8,58 @@
 
 enum MovieGenre {
   Action,
-  // add 4 more
+  Comedy,
+  Drama,
+  Horror,
+  Romance,
 }
 
-type Seat = [string, number]
+type Seat = [string, number];
 
 type Movie = {
-
-}
+  movieId: number;
+  title: string;
+  genre: MovieGenre;
+  availableSeats: Seat[];
+};
 
 let movies: Movie[] = [];
 
-function addMovie(movieId, title, genre, availableSeats) {
-
+function addMovie(movieId: number, title: string, genre: MovieGenre, availableSeats: Seat[]): Movie {
+  const movie: Movie = {
+    movieId: movieId,
+    title: title,
+    genre: genre,
+    availableSeats: availableSeats,
+  };
+  movies.push(movie);
+  return movie;
 }
 
-function bookSeat(movieId, rowLetter, seatNumber) {
+function bookSeat(movieId: number, seat: Seat): string {
+  const movie = movies.find((movie: Movie) => movie.movieId === movieId);
+  if (!movie) return "Movie not found";
 
+  const seatIndex = movie.availableSeats.findIndex((s: Seat) => s[0] === seat[0] && s[1] === seat[1]);
+  if (seatIndex === -1) return "Seat not available";
+
+  movie.availableSeats.splice(seatIndex, 1);
+  return `Seat ${seat[0]}${seat[1]} booked successfully`;
 }
 
-function checkSeatAvailability(movieId, rowLetter, seatNumber) {
+function checkSeatAvailability(movieId: number, seat: Seat): boolean | string {
+  const movie = movies.find((movie: Movie) => movie.movieId === movieId);
+  if (!movie) return "Movie not found";
 
+  return movie.availableSeats.some((s: Seat) => s[0] === seat[0] && s[1] === seat[1]);
 }
 
 // Test cases (Create more if needed)
-console.log(addMovie(1, "Avengers", MovieGenre.Action, [["A", 1], ["A", 2]])) // { movieId: 1, title: "Avengers", genre: MovieGenre.Action, availableSeats: [["A", 1], ["A", 2]] }
-console.log(bookSeat(1, "A", 1)) // "Seat A1 booked successfully"
-console.log(checkSeatAvailability(1, "A", 1)) // false
+console.log(
+  addMovie(1, "Avengers", MovieGenre.Action, [
+    ["A", 1],
+    ["A", 2],
+  ])
+); // { movieId: 1, title: "Avengers", genre: MovieGenre.Action, availableSeats: [["A", 1], ["A", 2]] }
+console.log(bookSeat(1, ["A", 1])); // "Seat A1 booked successfully"
+console.log(checkSeatAvailability(1, ["A", 1])); // false

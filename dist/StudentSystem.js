@@ -1,3 +1,4 @@
+"use strict";
 // 🏫 Create a Student Management System where students can be added, marked as passed/failed, and checked for status.
 // 1. Create a union literal type called StudentStatus that can be "active", "graduated", or "dropped".
 // 2. Create a type alias called Student which contains: studentId (number), name (string), age (number), subjects (string[]), status (StudentStatus).
@@ -5,51 +6,34 @@
 // 4. Create a function called updateStatus which updates a student's status. The return needs to be a string.
 // 5. Create a function called addSubject which adds a subject to a student’s subjects array. The return needs to be a string.
 // 6. Create a function called getStudent which returns a student’s information based on studentId.
-
-type StudentStatus = "active" | "graduated" | "dropped";
-
-type Student = {
-  studentId: number;
-  name: string;
-  age: number;
-  subjects: string[];
-  status: StudentStatus;
-};
-
-let students: Student[] = [];
-
-function findStudent(studentId: number): Student {
-  return students.find((student: Student) => student.studentId === studentId);
+var students = [];
+function findStudent(studentId) {
+    return students.find(function (student) { return student.studentId === studentId; });
 }
-
-function addStudent(newStudent: Student): Student {
-  students.push(newStudent);
-  return newStudent;
+function addStudent(newStudent) {
+    students.push(newStudent);
+    return newStudent;
 }
-
-function updateStatus(studentId: number, status: StudentStatus): string {
-  const student = findStudent(studentId);
-  student.status = status;
-  return `${student.name} has ${status}`;
+function updateStatus(studentId, status) {
+    var student = findStudent(studentId);
+    student.status = status;
+    return "".concat(student.name, " has ").concat(status);
 }
-
-function addSubject(studentId: number, subject: string): string {
-  const student = findStudent(studentId);
-  student.subjects.push(subject);
-  return `${subject} added to ${student.name}'s subjects`;
+function addSubject(studentId, subject) {
+    var student = findStudent(studentId);
+    student.subjects.push(subject);
+    return "".concat(subject, " added to ").concat(student.name, "'s subjects");
 }
-
-function getStudent(studentId: number): Student {
-  return findStudent(studentId);
+function getStudent(studentId) {
+    return findStudent(studentId);
 }
-
 // Test cases (Create more if needed)
-const newStudent: Student = {
-  studentId: 1,
-  name: "Alice",
-  age: 20,
-  subjects: ["Math", "Science"],
-  status: "active",
+var newStudent = {
+    studentId: 1,
+    name: "Alice",
+    age: 20,
+    subjects: ["Math", "Science"],
+    status: "active",
 };
 console.log(addStudent(newStudent)); // { studentId: 1, name: "Alice", age: 20, subjects: ["Math", "Science"], status: "active" }
 console.log(updateStatus(1, "graduated")); // "Alice has graduated"
